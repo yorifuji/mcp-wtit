@@ -25,7 +25,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf dist",
+    "clean": "rm -rf dist",
     "prebuild": "npm run clean",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
@@ -50,16 +50,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.13",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vitest/coverage-v8": "^2.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.0.0",
-    "rimraf": "^6.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
     "typescript-eslint": "^8.36.0",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.4"
   },
   "files": [
     "dist/**/*"
