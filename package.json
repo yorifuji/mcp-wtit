@@ -1,10 +1,13 @@
 {
-  "name": "@mcp/time-server",
-  "version": "1.0.0",
-  "description": "A Model Context Protocol server that provides current time in ISO8601 format",
+  "name": "mcp-wtit",
+  "version": "0.1.0",
+  "description": "A Model Context Protocol (MCP) server that provides current time in ISO8601 format with timezone support",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "mcp-wtit": "./dist/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -23,7 +26,8 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist",
-    "prebuild": "npm run clean"
+    "prebuild": "npm run clean",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
   },
   "keywords": [
     "mcp",
@@ -31,7 +35,15 @@
     "time-server",
     "iso8601"
   ],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yorifuji/mcp-wtit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yorifuji/mcp-wtit/issues"
+  },
+  "homepage": "https://github.com/yorifuji/mcp-wtit#readme",
+  "author": "yorifuji",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.1"

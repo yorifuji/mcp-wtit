@@ -19,9 +19,28 @@ A Model Context Protocol (MCP) server that provides current time in ISO8601 form
 
 ## 🛠️ Installation
 
+### As a global package
+
+```bash
+# Install globally
+npm install -g mcp-wtit
+
+# Run the server
+mcp-wtit
+```
+
+### As a dependency
+
+```bash
+# Install as a dependency
+npm install mcp-wtit
+```
+
+### From source
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mcp-wtit.git
+git clone https://github.com/yorifuji/mcp-wtit.git
 cd mcp-wtit
 
 # Install dependencies
@@ -29,6 +48,9 @@ npm install
 
 # Build the project
 npm run build
+
+# Run the server
+npm start
 ```
 
 ## 🚦 Quick Start
@@ -37,6 +59,30 @@ npm run build
 
 Add to your MCP client configuration:
 
+#### If installed globally:
+```json
+{
+  "mcpServers": {
+    "mcp-wtit": {
+      "command": "mcp-wtit"
+    }
+  }
+}
+```
+
+#### If installed locally:
+```json
+{
+  "mcpServers": {
+    "mcp-wtit": {
+      "command": "node",
+      "args": ["./node_modules/mcp-wtit/dist/index.js"]
+    }
+  }
+}
+```
+
+#### From source:
 ```json
 {
   "mcpServers": {
@@ -185,3 +231,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Built for the [Model Context Protocol](https://modelcontextprotocol.io/)
 - Inspired by Clean Architecture principles
+
+## 📦 NPM Package
+
+[![npm version](https://badge.fury.io/js/mcp-wtit.svg)](https://www.npmjs.com/package/mcp-wtit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/node/v/mcp-wtit.svg)](https://nodejs.org/)
+
+Published on npm: [mcp-wtit](https://www.npmjs.com/package/mcp-wtit)

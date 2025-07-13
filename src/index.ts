@@ -1,6 +1,17 @@
 #!/usr/bin/env node
 import { Container } from './di/container.js';
 
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.error('\nShutting down MCP Time Server...');
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  console.error('\nShutting down MCP Time Server...');
+  process.exit(0);
+});
+
 async function main(): Promise<void> {
   try {
     const container = Container.getInstance();
