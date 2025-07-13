@@ -48,6 +48,29 @@ Add to your MCP client configuration:
 }
 ```
 
+### Debug with MCP Inspector
+
+MCP Inspector provides a web-based interface to test and debug your MCP server:
+
+```bash
+# Build the project first
+npm run build
+
+# Run with MCP Inspector
+npm run inspect
+```
+
+This will:
+1. Start the MCP Inspector on http://localhost:6274
+2. Automatically open your browser
+3. Connect to the MCP server with debug capabilities
+
+In the Inspector, you can:
+- View available tools and their schemas
+- Test tool calls with different parameters
+- Monitor request/response communication
+- Debug server behavior in real-time
+
 ### For Development
 
 ```bash
@@ -138,8 +161,12 @@ npm run test:coverage
 | `npm run build` | Build the TypeScript project |
 | `npm run dev` | Run in development mode |
 | `npm start` | Run the built server |
+| `npm run inspect` | Debug with MCP Inspector |
 | `npm test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
 | `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Run ESLint and fix issues |
 | `npm run typecheck` | Run TypeScript type checking |
 
 ## 🤝 Contributing
