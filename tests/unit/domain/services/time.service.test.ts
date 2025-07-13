@@ -93,7 +93,7 @@ describe('TimeService', () => {
     it('should handle non-Error thrown in formatToISO8601', () => {
       // Mock Date.toISOString to throw a non-Error
       const originalToISOString = Date.prototype.toISOString;
-      Date.prototype.toISOString = () => {
+      Date.prototype.toISOString = (): never => {
         throw 'Not an error object';
       };
 
