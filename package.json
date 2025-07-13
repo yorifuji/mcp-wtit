@@ -1,6 +1,6 @@
 {
   "name": "mcp-wtit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Model Context Protocol (MCP) server that provides current time in ISO8601 format with timezone support",
   "type": "module",
   "main": "./dist/index.js",
