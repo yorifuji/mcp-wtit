@@ -5,12 +5,29 @@ import { GetCurrentTimeUseCase } from '../../../src/application/usecases/get-cur
 import { GetISO8601TimeUseCase } from '../../../src/application/usecases/get-iso8601-time.usecase.js';
 import { TimeServer } from '../../../src/infrastructure/mcp/time.server.js';
 
+// Type definition for Container's private properties
+interface IContainerWithPrivate {
+  instance: Container | null;
+}
+
+interface IUseCaseWithPrivate {
+  timeService: TimeService;
+}
+
+interface ITimeServerWithPrivate {
+  dependencies: {
+    getCurrentTimeUseCase: GetCurrentTimeUseCase;
+    getISO8601TimeUseCase: GetISO8601TimeUseCase;
+  };
+}
+
 describe('Container', () => {
   let container: Container;
 
   beforeEach(() => {
     // Reset singleton instance
-    (Container as any).instance = null;
+    const containerClass = Container as unknown as IContainerWithPrivate;
+    containerClass.instance = null;
     container = Container.getInstance();
   });
 
@@ -57,7 +74,8 @@ describe('Container', () => {
       const useCase = container.getCurrentTimeUseCase;
 
       // Access private property for testing
-      const useCaseTimeService = (useCase as any).timeService;
+      const useCaseWithPrivate = useCase as unknown as IUseCaseWithPrivate;
+      const useCaseTimeService = useCaseWithPrivate.timeService;
       expect(useCaseTimeService).toBe(timeService);
     });
   });
@@ -81,7 +99,8 @@ describe('Container', () => {
       const useCase = container.getISO8601TimeUseCase;
 
       // Access private property for testing
-      const useCaseTimeService = (useCase as any).timeService;
+      const useCaseWithPrivate = useCase as unknown as IUseCaseWithPrivate;
+      const useCaseTimeService = useCaseWithPrivate.timeService;
       expect(useCaseTimeService).toBe(timeService);
     });
   });
@@ -106,7 +125,8 @@ describe('Container', () => {
       const server = container.timeServer;
 
       // Access private property for testing
-      const serverDependencies = (server as any).dependencies;
+      const serverWithPrivate = server as unknown as ITimeServerWithPrivate;
+      const serverDependencies = serverWithPrivate.dependencies;
       expect(serverDependencies.getCurrentTimeUseCase).toBe(getCurrentTimeUseCase);
       expect(serverDependencies.getISO8601TimeUseCase).toBe(getISO8601TimeUseCase);
     });

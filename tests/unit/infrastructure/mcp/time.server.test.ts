@@ -3,12 +3,30 @@ import { TimeServer } from '../../../../src/infrastructure/mcp/time.server.js';
 import type { IGetCurrentTimeUseCase } from '../../../../src/application/interfaces/get-current-time.usecase.interface.js';
 import type { IGetISO8601TimeUseCase } from '../../../../src/application/interfaces/get-iso8601-time.usecase.interface.js';
 import type { ITimeData } from '../../../../src/shared/types/time.types.js';
+import type { Mock } from 'vitest';
+
+// Type definitions for private method testing
+interface ITimeServerPrivateMethods {
+  handleListTools(): Promise<{ tools: { name: string }[] }>;
+  handleCallTool(request: { name: string; arguments?: unknown }): Promise<{
+    content: { type: string; text: string }[];
+    isError?: boolean;
+  }>;
+  parseTimeArguments(args: unknown): { includeMilliseconds?: boolean; timezone?: string };
+}
+
+interface IServerInstance {
+  connect: Mock;
+  _requestHandlers: Map<string, CallToolHandler>;
+}
+
+type CallToolHandler = (request: { method: string; params: unknown }, extra: unknown) => Promise<unknown>;
 
 describe('TimeServer', () => {
   let timeServer: TimeServer;
   let mockGetCurrentTimeUseCase: IGetCurrentTimeUseCase;
   let mockGetISO8601TimeUseCase: IGetISO8601TimeUseCase;
-  let mockServerConnect: any;
+  let mockServerConnect: Mock;
 
   beforeEach(() => {
     mockGetCurrentTimeUseCase = {
@@ -19,7 +37,7 @@ describe('TimeServer', () => {
     };
 
     // Mock console.error to avoid test output noise
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     timeServer = new TimeServer({
       getCurrentTimeUseCase: mockGetCurrentTimeUseCase,
@@ -27,7 +45,7 @@ describe('TimeServer', () => {
     });
 
     // Access private server property for testing
-    const serverInstance = (timeServer as any).server;
+    const serverInstance = (timeServer as unknown as { server: IServerInstance }).server;
     mockServerConnect = vi.fn().mockResolvedValue(undefined);
     serverInstance.connect = mockServerConnect;
   });
@@ -38,7 +56,8 @@ describe('TimeServer', () => {
 
   describe('handleListTools', () => {
     it('should return available tools', async () => {
-      const handler = (timeServer as any).handleListTools.bind(timeServer);
+      const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+      const handler = privateMethods.handleListTools.bind(timeServer);
       const result = await handler();
 
       expect(result.tools).toHaveLength(2);
@@ -60,7 +79,8 @@ describe('TimeServer', () => {
           data: mockTimeData,
         });
 
-        const handler = (timeServer as any).handleCallTool.bind(timeServer);
+        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+        const handler = privateMethods.handleCallTool.bind(timeServer);
         const result = await handler({ name: 'get_current_time' });
 
         expect(result.content).toHaveLength(1);
@@ -75,7 +95,8 @@ describe('TimeServer', () => {
           error: 'Test error',
         });
 
-        const handler = (timeServer as any).handleCallTool.bind(timeServer);
+        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+        const handler = privateMethods.handleCallTool.bind(timeServer);
         const result = await handler({ name: 'get_current_time' });
 
         expect(result.content).toHaveLength(1);
@@ -95,8 +116,9 @@ describe('TimeServer', () => {
           data: mockTimeData,
         });
 
-        const handler = (timeServer as any).handleCallTool.bind(timeServer);
-        const result = await handler({
+        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+        const handler = privateMethods.handleCallTool.bind(timeServer);
+        await handler({
           name: 'get_current_time',
           arguments: {
             includeMilliseconds: false,
@@ -119,7 +141,8 @@ describe('TimeServer', () => {
           iso8601: mockISO8601,
         });
 
-        const handler = (timeServer as any).handleCallTool.bind(timeServer);
+        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+        const handler = privateMethods.handleCallTool.bind(timeServer);
         const result = await handler({ name: 'get_iso8601_time' });
 
         expect(result.content).toHaveLength(1);
@@ -134,7 +157,8 @@ describe('TimeServer', () => {
           error: 'Format error',
         });
 
-        const handler = (timeServer as any).handleCallTool.bind(timeServer);
+        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+        const handler = privateMethods.handleCallTool.bind(timeServer);
         const result = await handler({ name: 'get_iso8601_time' });
 
         expect(result.content).toHaveLength(1);
@@ -145,7 +169,8 @@ describe('TimeServer', () => {
     });
 
     it('should throw error for unknown tool', async () => {
-      const handler = (timeServer as any).handleCallTool.bind(timeServer);
+      const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+      const handler = privateMethods.handleCallTool.bind(timeServer);
       
       await expect(handler({ name: 'unknown_tool' })).rejects.toThrow('Unknown tool: unknown_tool');
     });
@@ -153,7 +178,8 @@ describe('TimeServer', () => {
 
   describe('parseTimeArguments', () => {
     it('should parse valid arguments', () => {
-      const parser = (timeServer as any).parseTimeArguments.bind(timeServer);
+      const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+      const parser = privateMethods.parseTimeArguments.bind(timeServer);
       const result = parser({
         includeMilliseconds: false,
         timezone: 'Asia/Tokyo',
@@ -167,7 +193,8 @@ describe('TimeServer', () => {
     });
 
     it('should handle invalid arguments', () => {
-      const parser = (timeServer as any).parseTimeArguments.bind(timeServer);
+      const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
+      const parser = privateMethods.parseTimeArguments.bind(timeServer);
       
       expect(parser(null)).toEqual({});
       expect(parser(undefined)).toEqual({});
@@ -200,9 +227,10 @@ describe('TimeServer', () => {
       });
 
       // Get the registered handler
-      const serverInstance = (timeServer as any).server;
-      const handlers = (serverInstance as any)._requestHandlers;
-      const callToolHandler = handlers.get('tools/call');
+      const serverWithPrivate = timeServer as unknown as { server: IServerInstance };
+      const serverInstance = serverWithPrivate.server;
+      const handlers = serverInstance._requestHandlers;
+      const callToolHandler = handlers.get('tools/call') as CallToolHandler;
 
       // Call the handler with a proper request object including method
       const result = await callToolHandler({
@@ -211,7 +239,7 @@ describe('TimeServer', () => {
           name: 'get_current_time',
           arguments: { includeMilliseconds: true }
         }
-      }, {});
+      }, {}) as { content: { type: string; text: string }[] };
 
       expect(result.content).toHaveLength(1);
       expect(result.content[0].type).toBe('text');
