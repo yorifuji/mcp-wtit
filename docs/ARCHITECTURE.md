@@ -1,53 +1,53 @@
-# アーキテクチャ
+# Architecture
 
-## 概要
+## Overview
 
-このMCPサーバーは、クリーンアーキテクチャの原則に基づいて設計されています。ビジネスロジックを中心に配置し、外部への依存を最小限に抑えることで、テスタブルで保守しやすいコードベースを実現しています。
+This MCP server is designed based on Clean Architecture principles. By placing business logic at the center and minimizing external dependencies, we achieve a testable and maintainable codebase.
 
-## レイヤー構造
+## Layer Structure
 
-### 1. ドメイン層 (`src/domain/`)
+### 1. Domain Layer (`src/domain/`)
 
-- **責務**: ビジネスロジックとビジネスルールの実装
-- **依存**: なし（完全に独立）
-- **主要コンポーネント**:
-  - `interfaces/`: ドメインサービスのインターフェース定義
-  - `services/`: ビジネスロジックの実装（TimeService）
+- **Responsibility**: Implementation of business logic and business rules
+- **Dependencies**: None (completely independent)
+- **Key Components**:
+  - `interfaces/`: Domain service interface definitions
+  - `services/`: Business logic implementation (TimeService)
 
-### 2. アプリケーション層 (`src/application/`)
+### 2. Application Layer (`src/application/`)
 
-- **責務**: ユースケースの実装とアプリケーション固有のビジネスルール
-- **依存**: ドメイン層のみ
-- **主要コンポーネント**:
-  - `interfaces/`: ユースケースのインターフェース定義
-  - `usecases/`: ユースケースの実装
+- **Responsibility**: Use case implementation and application-specific business rules
+- **Dependencies**: Domain layer only
+- **Key Components**:
+  - `interfaces/`: Use case interface definitions
+  - `usecases/`: Use case implementations
     - GetCurrentTimeUseCase
     - GetISO8601TimeUseCase
 
-### 3. インフラストラクチャ層 (`src/infrastructure/`)
+### 3. Infrastructure Layer (`src/infrastructure/`)
 
-- **責務**: 外部システムとの統合（MCP SDK）
-- **依存**: アプリケーション層、ドメイン層
-- **主要コンポーネント**:
-  - `mcp/`: MCPサーバーの実装
+- **Responsibility**: Integration with external systems (MCP SDK)
+- **Dependencies**: Application layer, Domain layer
+- **Key Components**:
+  - `mcp/`: MCP server implementation
 
-### 4. 共有層 (`src/shared/`)
+### 4. Shared Layer (`src/shared/`)
 
-- **責務**: 全レイヤーで共有される型定義とユーティリティ
-- **主要コンポーネント**:
-  - `types/`: 共通の型定義
-  - `errors/`: カスタムエラークラス
+- **Responsibility**: Type definitions and utilities shared across all layers
+- **Key Components**:
+  - `types/`: Common type definitions
+  - `errors/`: Custom error classes
 
-### 5. 依存性注入 (`src/di/`)
+### 5. Dependency Injection (`src/di/`)
 
-- **責務**: オブジェクトの生成と依存関係の管理
-- **主要コンポーネント**:
-  - `container.ts`: シングルトンパターンによるDIコンテナ
+- **Responsibility**: Object creation and dependency management
+- **Key Components**:
+  - `container.ts`: DI container using singleton pattern
 
-## データフロー
+## Data Flow
 
 ```
-MCPクライアント
+MCP Client
     ↓
 TimeServer (Infrastructure)
     ↓
@@ -56,27 +56,27 @@ UseCase (Application)
 TimeService (Domain)
 ```
 
-## 設計原則
+## Design Principles
 
-### SOLID原則
+### SOLID Principles
 
-1. **単一責任の原則**: 各クラスは単一の責務を持つ
-2. **オープン・クローズドの原則**: 拡張に対して開き、修正に対して閉じている
-3. **リスコフの置換原則**: インターフェースを通じた抽象化
-4. **インターフェース分離の原則**: 必要最小限のインターフェース
-5. **依存性逆転の原則**: 上位レイヤーは下位レイヤーに依存しない
+1. **Single Responsibility Principle**: Each class has a single responsibility
+2. **Open-Closed Principle**: Open for extension, closed for modification
+3. **Liskov Substitution Principle**: Abstraction through interfaces
+4. **Interface Segregation Principle**: Minimal necessary interfaces
+5. **Dependency Inversion Principle**: Higher layers don't depend on lower layers
 
-### テスタビリティ
+### Testability
 
-- 各レイヤーが独立してテスト可能
-- インターフェースを使用したモックの容易な作成
-- 純粋関数の活用
+- Each layer can be tested independently
+- Easy mock creation using interfaces
+- Utilization of pure functions
 
-## 技術スタック
+## Technology Stack
 
-- **言語**: TypeScript 5.6+
-- **モジュールシステム**: ESModules
-- **テスト**: Vitest
-- **リント**: ESLint 9
-- **ビルド**: TypeScript Compiler
-- **実行環境**: Node.js 18+
+- **Language**: TypeScript 5.6+
+- **Module System**: ESModules
+- **Testing**: Vitest
+- **Linting**: ESLint 9
+- **Build**: TypeScript Compiler
+- **Runtime**: Node.js 18+
