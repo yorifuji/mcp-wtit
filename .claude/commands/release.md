@@ -31,7 +31,8 @@ npm run build
 2. **Update version**
 ```bash
 # Update version based on the argument (patch/minor/major)
-npm version {{VERSION_TYPE}}
+# This will create a commit with message "Release x.y.z"
+npm version {{VERSION_TYPE}} -m "Release %s"
 ```
 
 3. **Push changes**
