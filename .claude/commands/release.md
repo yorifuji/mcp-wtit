@@ -36,6 +36,16 @@ npm version {{VERSION_TYPE}}
 
 3. **Push changes**
 ```bash
+# Show commits that will be pushed
+echo "=== Commits to be pushed ==="
+git log origin/main..HEAD --oneline
+
+# Show diff of changes
+echo -e "\n=== Changes to be pushed ==="
+git diff origin/main..HEAD
+
+# ⚠️ CONFIRM: Ask user "Ready to push these changes to GitHub? (yes/no)" and proceed only if they confirm
+
 # Push the version commit
 git push
 
