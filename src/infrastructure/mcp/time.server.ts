@@ -11,11 +11,9 @@ import type {
   Tool
 } from '@modelcontextprotocol/sdk/types.js';
 import type { IGetCurrentTimeUseCase } from '../../application/interfaces/get-current-time.usecase.interface.js';
-import type { IGetISO8601TimeUseCase } from '../../application/interfaces/get-iso8601-time.usecase.interface.js';
 
 export interface ITimeServerDependencies {
   getCurrentTimeUseCase: IGetCurrentTimeUseCase;
-  getISO8601TimeUseCase: IGetISO8601TimeUseCase;
 }
 
 export class TimeServer {
@@ -65,25 +63,6 @@ export class TimeServer {
             },
           },
         } as Tool,
-        {
-          name: 'get_iso8601_time',
-          description: 'Get the current time in ISO8601 format only',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              includeMilliseconds: {
-                type: 'boolean',
-                description: 'Include milliseconds in the ISO8601 format (default: true)',
-                default: true,
-              },
-              timezone: {
-                type: 'string',
-                description: 'Timezone for the time (default: UTC). Examples: "UTC", "America/New_York", "Asia/Tokyo"',
-                default: 'UTC',
-              },
-            },
-          },
-        } as Tool,
       ],
     };
   }
@@ -94,8 +73,6 @@ export class TimeServer {
     switch (name) {
       case 'get_current_time':
         return this.handleGetCurrentTime(args);
-      case 'get_iso8601_time':
-        return this.handleGetISO8601Time(args);
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -127,31 +104,6 @@ export class TimeServer {
     };
   }
 
-  private async handleGetISO8601Time(args: unknown): Promise<CallToolResult> {
-    const input = this.parseTimeArguments(args);
-    const result = await this.dependencies.getISO8601TimeUseCase.execute(input);
-
-    if (!result.success || !result.iso8601) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Error: ${result.error || 'Failed to get ISO8601 time'}`,
-          } as TextContent,
-        ],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [
-        {
-          type: 'text',
-          text: result.iso8601,
-        } as TextContent,
-      ],
-    };
-  }
 
   private parseTimeArguments(args: unknown): { includeMilliseconds?: boolean; timezone?: string } {
     if (!args || typeof args !== 'object') {

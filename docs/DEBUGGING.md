@@ -26,7 +26,7 @@ MCP Inspector is a powerful web-based tool for debugging and testing MCP servers
 #### Testing Tools
 
 1. **View Available Tools**
-   - Once connected, you'll see `get_current_time` and `get_iso8601_time` in the tools list
+   - Once connected, you'll see `get_current_time` in the tools list
    - Click on a tool to view its schema and parameters
 
 2. **Execute Tool Calls**

@@ -43,39 +43,6 @@ Get the current time with detailed information including ISO8601 format, timesta
 }
 ```
 
-### `get_iso8601_time`
-
-Get the current time in ISO8601 format only.
-
-#### Parameters
-
-| Name | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `includeMilliseconds` | boolean | No | true | Include milliseconds in the ISO8601 format |
-| `timezone` | string | No | "UTC" | Timezone for the time. Examples: "UTC", "America/New_York", "Asia/Tokyo" |
-
-#### Response
-
-```
-2024-01-15T10:30:45.123Z
-```
-
-#### Example Usage
-
-```json
-// Request
-{
-  "tool": "get_iso8601_time",
-  "arguments": {
-    "includeMilliseconds": true,
-    "timezone": "Asia/Tokyo"
-  }
-}
-
-// Response
-"2024-01-15T19:30:45.123+09:00"
-```
-
 ## Error Handling
 
 ### Error Types

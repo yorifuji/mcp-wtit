@@ -22,7 +22,6 @@ This MCP server is designed based on Clean Architecture principles. By placing b
   - `interfaces/`: Use case interface definitions
   - `usecases/`: Use case implementations
     - GetCurrentTimeUseCase
-    - GetISO8601TimeUseCase
 
 ### 3. Infrastructure Layer (`src/infrastructure/`)
 

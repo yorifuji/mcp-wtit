@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TimeServer } from '../../../../src/infrastructure/mcp/time.server.js';
 import type { IGetCurrentTimeUseCase } from '../../../../src/application/interfaces/get-current-time.usecase.interface.js';
-import type { IGetISO8601TimeUseCase } from '../../../../src/application/interfaces/get-iso8601-time.usecase.interface.js';
 import type { ITimeData } from '../../../../src/shared/types/time.types.js';
 import type { Mock } from 'vitest';
 
@@ -25,14 +24,10 @@ type CallToolHandler = (request: { method: string; params: unknown }, extra: unk
 describe('TimeServer', () => {
   let timeServer: TimeServer;
   let mockGetCurrentTimeUseCase: IGetCurrentTimeUseCase;
-  let mockGetISO8601TimeUseCase: IGetISO8601TimeUseCase;
   let mockServerConnect: Mock;
 
   beforeEach(() => {
     mockGetCurrentTimeUseCase = {
-      execute: vi.fn(),
-    };
-    mockGetISO8601TimeUseCase = {
       execute: vi.fn(),
     };
 
@@ -41,7 +36,6 @@ describe('TimeServer', () => {
 
     timeServer = new TimeServer({
       getCurrentTimeUseCase: mockGetCurrentTimeUseCase,
-      getISO8601TimeUseCase: mockGetISO8601TimeUseCase,
     });
 
     // Access private server property for testing
@@ -60,9 +54,8 @@ describe('TimeServer', () => {
       const handler = privateMethods.handleListTools.bind(timeServer);
       const result = await handler();
 
-      expect(result.tools).toHaveLength(2);
+      expect(result.tools).toHaveLength(1);
       expect(result.tools[0].name).toBe('get_current_time');
-      expect(result.tools[1].name).toBe('get_iso8601_time');
     });
   });
 
@@ -146,57 +139,6 @@ describe('TimeServer', () => {
           includeMilliseconds: false,
           timezone: 'America/New_York',
         });
-      });
-    });
-
-    describe('get_iso8601_time', () => {
-      it('should handle successful get_iso8601_time call', async () => {
-        const mockISO8601 = '2024-01-15T10:30:45.123Z';
-        vi.mocked(mockGetISO8601TimeUseCase.execute).mockResolvedValue({
-          success: true,
-          iso8601: mockISO8601,
-        });
-
-        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
-        const handler = privateMethods.handleCallTool.bind(timeServer);
-        const result = await handler({ name: 'get_iso8601_time' });
-
-        expect(result.content).toHaveLength(1);
-        expect(result.content[0].type).toBe('text');
-        expect(result.content[0].text).toBe(mockISO8601);
-        expect(result.isError).toBeUndefined();
-      });
-
-      it('should handle failed get_iso8601_time call', async () => {
-        vi.mocked(mockGetISO8601TimeUseCase.execute).mockResolvedValue({
-          success: false,
-          error: 'Format error',
-        });
-
-        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
-        const handler = privateMethods.handleCallTool.bind(timeServer);
-        const result = await handler({ name: 'get_iso8601_time' });
-
-        expect(result.content).toHaveLength(1);
-        expect(result.content[0].type).toBe('text');
-        expect(result.content[0].text).toBe('Error: Format error');
-        expect(result.isError).toBe(true);
-      });
-
-      it('should handle get_iso8601_time call with no error message', async () => {
-        vi.mocked(mockGetISO8601TimeUseCase.execute).mockResolvedValue({
-          success: false,
-          iso8601: undefined,
-        });
-
-        const privateMethods = timeServer as unknown as ITimeServerPrivateMethods;
-        const handler = privateMethods.handleCallTool.bind(timeServer);
-        const result = await handler({ name: 'get_iso8601_time' });
-
-        expect(result.content).toHaveLength(1);
-        expect(result.content[0].type).toBe('text');
-        expect(result.content[0].text).toBe('Error: Failed to get ISO8601 time');
-        expect(result.isError).toBe(true);
       });
     });
 

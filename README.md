@@ -157,19 +157,6 @@ Get the current time with detailed information.
 }
 ```
 
-#### `get_iso8601_time`
-
-Get the current time in ISO8601 format only.
-
-**Parameters:**
-- `includeMilliseconds` (boolean, optional): Include milliseconds in ISO8601 format (default: true)
-- `timezone` (string, optional): Timezone for the time (default: "UTC")
-
-**Response:**
-```
-"2024-01-15T10:30:45.123Z"
-```
-
 ## 🏛️ Architecture
 
 This project follows Clean Architecture principles:
