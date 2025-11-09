@@ -2,6 +2,10 @@
 
 A Model Context Protocol (MCP) server that provides current time in ISO8601 format with timezone support.
 
+<a href="https://glama.ai/mcp/servers/@yorifuji/mcp-wtit">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@yorifuji/mcp-wtit/badge" alt="MCP-WTIT MCP server" />
+</a>
+
 ## 🚀 Features
 
 - ⏰ Get current time with detailed information (ISO8601, timestamp, timezone)
